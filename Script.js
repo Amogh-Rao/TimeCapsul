@@ -12,7 +12,7 @@ function calculateRemainingTime(datetime) {
   const targetTime = new Date(datetime).getTime();
   const currentTime = new Date().getTime();
   const remainingTime = targetTime - currentTime;
-  
+
   return remainingTime > 0 ? remainingTime : 0;
 }
 
@@ -62,7 +62,7 @@ function displayRemainingTime() {
 function isContentAvailable(datetime) {
   const targetTime = new Date(datetime).getTime();
   const currentTime = new Date().getTime();
-  
+
   return currentTime >= targetTime;
 }
 
@@ -88,3 +88,25 @@ document.addEventListener("DOMContentLoaded", function() {
     displayContent();
   }
 });
+
+function handleFormSubmit(event) {
+  event.preventDefault();
+
+  // Get the entered content and date/time
+  const content = document.getElementById("contentInput").value;
+  const dateTime = document.getElementById("datetimeInput").value;
+
+  // Generate a unique URL with query parameters
+  const url = window.location.href + "content.html?content=" + encodeURIComponent(content) + "&datetime=" + encodeURIComponent(dateTime);
+
+  // Display the generated URL to the user
+  const urlContainer = document.getElementById("urlContainer");
+  urlContainer.innerHTML = `
+    <p>Time Capsule URL:</p>
+    <a href="${url}" target="_blank">${url}</a>
+  `;
+  urlContainer.style.display = "block";
+}
+
+// Add event listener to the form submit
+document.getElementById("timeCapsuleForm").addEventListener("submit", handleFormSubmit);
