@@ -1,11 +1,17 @@
-document.getElementById('timeCapsuleForm').addEventListener('submit', function(event) {
+document.getElementById('timeCapsuleForm').addEventListener('submit', function (event) {
   event.preventDefault();
 
-  var content = document.getElementById('contentInput').value;
-  var datetime = document.getElementById('dateTimeInput').value;
+  var contentInput = document.getElementById('contentInput');
+  var content = contentInput.value;
 
-  // You can handle the form submission here, such as saving the content and datetime to a database.
+  if (content.trim() !== '') {
+    var targetDate = new Date(document.getElementById('datetimeInput').value);
 
-  // Redirect to the content page with the generated URL
-  window.location.href = 'content.html?content=' + encodeURIComponent(content) + '&datetime=' + encodeURIComponent(datetime);
+    var queryParams = new URLSearchParams();
+    queryParams.set('datetime', targetDate.toISOString());
+    queryParams.set('content', encodeURIComponent(content));
+
+    var url = 'content.html?' + queryParams.toString();
+    window.location.href = url;
+  }
 });
