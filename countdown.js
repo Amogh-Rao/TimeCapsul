@@ -1,39 +1,41 @@
 function updateCountdown() {
   var countdownElement = document.getElementById('countdown');
   var availableDateElement = document.getElementById('availableDate');
+  var contentTextElement = document.getElementById('contentText');
 
-  var params = new URLSearchParams(window.location.search);
-  var datetimeParam = params.get('datetime');
-  var contentParam = params.get('content');
+  var queryParams = new URLSearchParams(window.location.search);
+  var targetDateString = queryParams.get('datetime');
+  var content = decodeURIComponent(queryParams.get('content'));
 
-  if (datetimeParam) {
-    var targetDate = new Date(datetimeParam);
+  if (targetDateString && content) {
+    var targetDate = new Date(targetDateString);
     var currentDate = new Date();
 
-    if (currentDate < targetDate) {
-      var timeDifference = targetDate.getTime() - currentDate.getTime();
-
-      var days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-      var hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      var minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-      var seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-
-      countdownElement.textContent = days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
-      availableDateElement.textContent = 'This time capsule will be available on ' + targetDate.toLocaleString();
-    } else {
-      countdownElement.textContent = 'Time capsule available!';
+    if (currentDate >= targetDate) {
+      countdownElement.style.display = 'none';
       availableDateElement.style.display = 'none';
-
-      if (contentParam) {
-        var contentElement = document.createElement('p');
-        contentElement.textContent = 'Content: ' + decodeURIComponent(contentParam);
-        document.body.appendChild(contentElement);
-      }
+      contentTextElement.textContent = content;
+    } else {
+      countdownElement.textContent = getRemainingTime(targetDate);
+      availableDateElement.textContent = 'This time capsule will be available on ' + targetDate.toDateString();
+      setInterval(function () {
+        countdownElement.textContent = getRemainingTime(targetDate);
+      }, 1000);
     }
-  } else {
-    countdownElement.textContent = 'No countdown available.';
-    availableDateElement.style.display = 'none';
   }
 }
 
-updateCountdown();
+function getRemainingTime(targetDate) {
+  var currentDate = new Date();
+  var timeDiff = targetDate.getTime() - currentDate.getTime();
+  var seconds = Math.floor(timeDiff / 1000) % 60;
+  var minutes = Math.floor(timeDiff / 1000 / 60) % 60;
+  var hours = Math.floor(timeDiff / 1000 / 60 / 60) % 24;
+  var days = Math.floor(timeDiff / 1000 / 60 / 60 / 24);
+
+  return days + ' days, ' + hours + ' hours, ' + minutes + ' minutes, ' + seconds + ' seconds';
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+  updateCountdown();
+});
