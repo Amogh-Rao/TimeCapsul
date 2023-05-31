@@ -1,17 +1,16 @@
-document.getElementById('timeCapsuleForm').addEventListener('submit', function (event) {
+function handleFormSubmit(event) {
   event.preventDefault();
 
-  var contentInput = document.getElementById('contentInput');
-  var content = contentInput.value;
+  // Get the entered content and date/time
+  const content = document.getElementById("contentInput").value;
+  const dateTime = document.getElementById("datetimeInput").value;
 
-  if (content.trim() !== '') {
-    var targetDate = new Date(document.getElementById('datetimeInput').value);
+  // Generate a unique URL with query parameters
+  const url = window.location.href + "content.html?content=" + encodeURIComponent(content) + "&datetime=" + encodeURIComponent(dateTime);
 
-    var queryParams = new URLSearchParams();
-    queryParams.set('datetime', targetDate.toISOString());
-    queryParams.set('content', encodeURIComponent(content));
+  // Redirect to the generated URL
+  window.location.href = url;
+}
 
-    var url = 'content.html?' + queryParams.toString();
-    window.location.href = url;
-  }
-});
+// Add event listener to the form submit
+document.getElementById("timeCapsuleForm").addEventListener("submit", handleFormSubmit);
